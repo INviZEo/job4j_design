@@ -17,7 +17,7 @@ public class NonNullIterator implements Iterator<Integer> {
         while (data.length > index && data[index] == null) {
             index++;
         }
-        return data.length > index && data[index] != null;
+        return data.length > index;
     }
 
     @Override
