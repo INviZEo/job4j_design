@@ -94,7 +94,7 @@ class NonCollisionMapTest {
         map.put(null, "0000");
         assertThat(map.put(15, "15")).isTrue();
         assertThat(map).hasSize(6);
-        assertThat(map.put(8, "8")).isTrue();
+        assertThat(map. put(8, "8")).isTrue();
         assertThat(map.put(16, "16")).isFalse();
         assertThat(map.get(4)).isEqualTo("4");
         assertThat(map.get(8)).isEqualTo("8");
