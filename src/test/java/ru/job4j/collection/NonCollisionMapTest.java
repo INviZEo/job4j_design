@@ -18,6 +18,53 @@ class NonCollisionMapTest {
     }
 
     @Test
+    void checkPut() {
+        map.put(7, "21");
+        assertThat(map).hasSize(5);
+    }
+
+    @Test
+    void checkGet() {
+        map.put(6, "33");
+        assertThat(map.get(6)).isEqualTo("33");
+    }
+
+    @Test
+    void checkDelete() {
+        map.remove(2);
+        assertThat(map).hasSize(3).contains(1, 3, 4);
+    }
+
+    @Test
+    void checkIterator() {
+        map.remove(2);
+        map.remove(3);
+        map.put(7, "0000");
+        Iterator<Integer> it = map.iterator();
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isEqualTo(1);
+        assertThat(it.next()).isEqualTo(4);
+        assertThat(it.next()).isEqualTo(7);
+        assertThat(it.hasNext()).isFalse();
+    }
+
+    @Test
+    void checkIteratorPutDeleteAndGet() {
+        map.put(7, "10");
+        map.remove(3);
+        map.put(5, "5");
+        map.remove(4);
+        Iterator<Integer> it = map.iterator();
+        assertThat(map.get(3)).isNull();
+        assertThat(it.hasNext()).isTrue();
+        assertThat(it.next()).isEqualTo(1);
+        assertThat(it.next()).isEqualTo(2);
+        assertThat(it.next()).isEqualTo(5);
+        assertThat(it.next()).isEqualTo(7);
+        assertThat(it.hasNext()).isFalse();
+    }
+
+    @Test
     void checkSimpleIterator() {
         assertThat(map).hasSize(4).contains(1, 2, 3, 4);
     }
@@ -94,7 +141,7 @@ class NonCollisionMapTest {
         map.put(null, "0000");
         assertThat(map.put(15, "15")).isTrue();
         assertThat(map).hasSize(6);
-        assertThat(map. put(8, "8")).isTrue();
+        assertThat(map.put(8, "8")).isTrue();
         assertThat(map.put(16, "16")).isFalse();
         assertThat(map.get(4)).isEqualTo("4");
         assertThat(map.get(8)).isEqualTo("8");
