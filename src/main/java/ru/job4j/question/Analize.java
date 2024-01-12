@@ -4,47 +4,24 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public class Analize {
 
     public static Info diff(Set<User> previous, Set<User> current) {
         Info info = new Info(0, 0, 0);
-        Map<Integer, User> map = new HashMap<>();
-        boolean rsl = false;
-        for (User prev: previous) {
-            for (User curr: current) {
-                if (prev.getId() == curr.getId() && !prev.getName().equals(curr.getName())) {
-                    info.setChanged(info.getChanged() + 1);
-                    break;
-                }
+        Map<Integer, String> map = current.stream().collect(Collectors.toMap(User::getId, User::getName));
+        for (User mapPut : previous) {
+            if (map.containsKey(mapPut.getId()) && !map.containsValue(mapPut.getName())) {
+                info.setChanged(+1);
             }
-        }
 
-        for (User curr : current) {
-            rsl = false;
-            for (User prev : previous) {
-                if (curr.getId() == prev.getId()) {
-                    rsl = true;
-                    break;
-                }
+            if (previous.size() > current.size() || !map.containsKey(mapPut.getId())) {
+                info.setDeleted(+1);
             }
-            if (!rsl) {
-                info.setAdded(info.getAdded() + 1);
-            }
-        }
 
-        for (User prev : previous) {
-            rsl = false;
-            for (User curr : current) {
-                if (prev.getId() == curr.getId()) {
-                    rsl = true;
-                    break;
-                }
-            }
-            if (!rsl) {
-                info.setDeleted(info.getDeleted() + 1);
-            }
+            info.setAdded(current.size() - (previous.size() - info.getDeleted()));
         }
-            return info;
+        return info;
     }
 }
