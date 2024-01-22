@@ -1,0 +1,180 @@
+
+1. В  комментарии распишите про коллизии в Hashtable структурах и как они разрешаются в Java.
+- Коллизии это когда хэшкод двух объектов совпадает, чтобы этого избежать длину объекта умножают
+ на какое нибудь нечетное число (чаще всего это 29 или 31) но так как int не резиновый и он ограничен
+ , коллизии неизбежны если будут огромные кол-ва объектов.
+
+1) Объяснить почему делается в первую очередь эта проверка в мапе - п
+отому что по хэшу расчитывается бакет и соответственно чтобы была проверка на бакет нужно узнать равен ли хэш
+(и тогда понятно в одном они бакете или нет)
+
+2) Что будет в ситуации первой? Замена или вставка? - замена, т.к. объекты равны и находятся в одном бакете
+
+3) Что будет в ситуации второй? Замена или вставка? - вставка, объекты в разных бакетах и даже не сравниваются
+
+когда коллекция достигает размера (размер * 0.75) - происходит увеличение размера в 2 раза и происходит рехэширование
+, преобразовывая в новую коллекцию и мы получаем сохранение
+скорости получения данных но и при этом не тратим слишком много памяти
+
+Контракт hashCode() и equals()
+
+Если объекты равны по hashCode(), то они не обязательно равны по equals()
+Если объекты равны по equals(), то они обязательно равны по hashCode()
+Если объект не равны по hashCode(), то они точно не равны по equals()
+Если объекты не равны по equals(), то возможно совпадение их hashCode()
+
+Поговорим о структуре тестового метода. Тесты желательно писать в одном стиле.
+ Хорошо зарекомендовал себя шаблон тестов, получивший название AAA - Arrange, Act, Assert.
+____На этапе Arrange производится подготовка данных для проверяемого действия -
+создаются нужные объекты, поля объектов наполняются тестовыми данными.
+____Этап Act - это выполнение действия объекта, которое должно будет оцениваться,
+ и сохранение результата этого действия.
+____Этап Assert - это проверка соответствие
+фактического результата действия ожидаемому результату.
+Рассмотрим метод из предыдущего урока и отметим на нем этапы Arrange-Act-Assert:
+
+
+@Test
+void whenMultiCallHasNextThenTrue() {
+/* Arrange - создание объекта и заполнение его данными */
+   ArrayIt iterator = new ArrayIt(
+           new int[] {1, 2, 3}
+   );
+/* Act - выполнение действия и сохранение результата */
+   boolean rsl = iterator.hasNext();
+/* Assert - оценка соответствия результата ожидаемому исходу */
+   assertThat(result).isTrue();
+/* этапы Act и Assert могут быть размещены в одной строке кода */
+   assertThat(iterator.hasNext()).isTrue();
+}
+
+
+
+import java.util.*;
+
+public class NonCollisionMap<K, V> implements SimpleMap<K, V> {
+
+    private static final float LOAD_FACTOR = 0.75f;
+
+    private int capacity = 8;
+
+    private int count = 0;
+
+    private int modCount = 0;
+
+    private MapEntry<K, V>[] table = new MapEntry[capacity];
+
+    @Override
+    public boolean put(K key, V value) {
+        int hash = hash(Objects.hashCode(key));
+        int i = hash & (table.length - 1);
+        boolean rsl = false;
+        /*if ((float) count / capacity >= 0.75) {
+            capacity *= 2;
+            modCount++;
+        }*/
+        if (table[i] == null) {
+            table[i] = new MapEntry<>(key, value);
+            count++;
+            modCount++;
+            rsl = true;
+        }
+        return rsl;
+    }
+
+    private int hash(int hashcode) {
+        return hashcode ^ (hashcode >>> 16);
+    }
+
+    private int indexFor(int hash) {
+        return hash % table.length;
+    }
+
+    private void expand() {
+
+    }
+
+    @Override
+    public V get(K key) {
+        int index = getIndex(key);
+        V rsl = null;
+        if (table[index] != null
+                && Objects.hashCode(key) == hash(Objects.hashCode(table[index].key))
+                && Objects.equals(key, table[index].key)) {
+            rsl = table[index].value;
+        }
+        return rsl;
+    }
+
+    @Override
+    public boolean remove(K key) {
+        int index = getIndex(key);
+        boolean rsl = false;
+        if (table[index] != null
+                && Objects.hashCode(key) == hash(Objects.hashCode(table[index].key))
+                && Objects.equals(key, table[index].key)) {
+            table[index].key = null;
+            rsl = true;
+            count--; // если будет удаление
+            modCount++; // если будет удаление
+        }
+        return rsl;
+    }
+
+    private int getIndex(K key) {
+        return indexFor(hash(Objects.hashCode(key)));
+    }
+
+    @Override
+    public Iterator<K> iterator() {
+        return new Iterator<K>() {
+            private int mCount = modCount;
+            int size = 0;
+            @Override
+            public boolean hasNext() {
+                if (mCount != modCount) {
+                    throw new ConcurrentModificationException();
+                }
+                while (table.length > size && table[size] == null) {
+                    size++;
+                }
+                return capacity > size;
+            }
+
+            @Override
+            public K next() {
+                if (!hasNext()) {
+                    throw new NoSuchElementException();
+                }
+                return table[size++].key;
+            }
+        };
+    }
+
+    private static class MapEntry<K, V> {
+
+        K key;
+        V value;
+
+        public MapEntry(K key, V value) {
+            this.key = key;
+            this.value = value;
+        }
+    }
+
+
+    public static void main(String[] args) {
+        NonCollisionMap<Object, Object> map = new NonCollisionMap<>();
+        System.out.println(map.hash(65536));
+        System.out.println(map.indexFor(7));
+        System.out.println(map.table.length);
+    }
+}
+
+
+put(table[i].key, value);
+
+if (newT.value != null) {
+
+
+ctrl + alt + L = автоупорядочить код
