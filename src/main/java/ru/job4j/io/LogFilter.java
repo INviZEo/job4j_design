@@ -20,7 +20,7 @@ public class LogFilter {
             for (String line = input.readLine(); line != null; line = input.readLine()) {
                 String[] array = line.split(" ");
                 if ("404".equals(array[array.length - 2])) {
-                    rsl.add(line + System.lineSeparator());
+                    rsl.add(line);
                 }
             }
         } catch (IOException e) {
@@ -35,7 +35,9 @@ public class LogFilter {
                         new FileOutputStream(out)
                 ))) {
             List<String> rsl = filter();
-            writer.println(rsl);
+            for (String w: rsl) {
+                writer.println(w);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
