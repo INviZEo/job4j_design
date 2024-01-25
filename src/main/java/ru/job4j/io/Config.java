@@ -29,7 +29,7 @@ public class Config {
                     String value = array[1];
                     values.put(key, value);
                 }
-                if (array.length == 1 || array[0].equals("") || array[1].equals("")) {
+                if (array.length == 1 || ("").equals(array[0])  || ("").equals(array[1])) {
                     throw new IllegalArgumentException();
                 }
             }
