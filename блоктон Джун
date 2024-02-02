@@ -176,5 +176,23 @@ put(table[i].key, value);
 
 if (newT.value != null) {
 
+boolean haveStartValue = false;
+
+if (("400".equals(key) || "500".equals(key)) && haveStartValue == false) {
+    startValue = value;
+      haveStartValue = true; // Чтобы если след число было 400 или 500 оно не записалось пока не запишеться 100 или 200 или 300
+
+    } else if (("100".equals(key) || "200".equals(key) || "300".equals(key)) && startValue != null) {
+        endValue = value;
+        haveStartValue = false; // если в очереди ещё есть числа и оно будет равно 400 или 500
+         этот цикл тоже запишеться со следующей итерации
 
 ctrl + alt + L = автоупорядочить код
+
+
+Чтобы удалить локальную ветку в Git, используйте команду:
+git branch -d your-branch
+где your-branch — имя ветки, которую хотите удалить.
+Удалить ветку, в которой вы находитесь в данный момент, нельзя. Поэтому перед удалением вам нужно перейти на другую ветку, например, master. Сделать это можно с помощью команды:
+git checkout master.
+Если в ветке есть несохраненные изменения, то удалить ее с помощью ключа —d не получится.
