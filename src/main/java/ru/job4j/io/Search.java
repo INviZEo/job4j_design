@@ -5,17 +5,37 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class Search {
     public static void main(String[] args) throws IOException {
-        Path start = Paths.get(".");
-        search(start, path -> path.toFile().getName().endsWith(".java")).forEach(System.out::println);
+        isValidate(args);
+        Path start = Paths.get(args[0]);
+        Path expansion = Paths.get(args[1]);
+        search(start, path -> path.toFile().getName().endsWith(String.valueOf(expansion))).forEach(System.out::println);
     }
 
     public static List<Path> search(Path root, Predicate<Path> condition) throws IOException {
         SearchFiles searcher = new SearchFiles(condition);
         Files.walkFileTree(root, searcher);
         return searcher.getPaths();
+    }
+
+    public static void isValidate(String[] args) {
+        if (args.length < 2) {
+            throw new IllegalArgumentException("Start or Expansion not exist");
+        }
+        Path start = Paths.get(args[0]);
+        String expansion = args[1];
+        if (!Files.exists(start)) {
+            throw new IllegalArgumentException("Start not exist");
+        }
+        if (!Files.isDirectory(start)) {
+            throw new IllegalArgumentException("Its not directory");
+        }
+        if (!expansion.startsWith(".") || expansion.length() < 2) {
+            throw new IllegalArgumentException("Enter correct expansion");
+        }
     }
 }
