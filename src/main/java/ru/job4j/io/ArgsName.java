@@ -8,7 +8,6 @@ public class ArgsName {
     private final Map<String, String> values = new HashMap<>();
 
     public String get(String key) {
-        /* TODO add the necessary checks. добавьте необходимые проверки */
         if (!values.containsKey(key)) {
             throw new IllegalArgumentException("This key: 'Xms' is missing");
         }
@@ -43,7 +42,6 @@ public class ArgsName {
     }
 
     public static ArgsName of(String[] args) {
-        /* TODO add the necessary checks. добавьте необходимые проверки */
         if (args.length == 0) {
             throw new IllegalArgumentException("Arguments not passed to program");
         }
