@@ -196,3 +196,86 @@ git branch -d your-branch
 Удалить ветку, в которой вы находитесь в данный момент, нельзя. Поэтому перед удалением вам нужно перейти на другую ветку, например, master. Сделать это можно с помощью команды:
 git checkout master.
 Если в ветке есть несохраненные изменения, то удалить ее с помощью ключа —d не получится.
+
+String array = "=s-==asda";
+array = array.replace("=", "Лёля молодец"); // replace меняет все указанные символы на указанные значения
+                                            \\ replaceFirst меняет первое значение, можно указать что нужно менять
+                                             конкретно(поставить "-" и если будет другое значение то его не будет менять)
+System.out.println(array); (Не забывать присваивать значения: когда создал переменную и изменяешь её нужно
+делать присваивание "array = array.replace() ну или любой другой метод, иначе строка игнорируется"
+
+
+ public void run() {
+        Scanner scanner = new Scanner(System.in);
+        boolean chatting = false;
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        List<String> text = new ArrayList<>();
+        Random random = new Random();
+        int randomIndex = random.nextInt(readPhrases().size());
+        String randomWord = readPhrases().get(randomIndex);
+
+//        String filePath = "data/dialog.txt";
+//        try {
+//            FileWriter fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8, true);
+//            PrintWriter printWriter = new PrintWriter(fileWriter);
+
+            flag:
+            while (!chatting) {
+                System.out.print("Вы пишите: ");
+                String userInput = scanner.nextLine();
+                saveLog(text);
+//                int randomIndex = random.nextInt(readPhrases().size());
+//                String randomWord = readPhrases().get(randomIndex);
+                System.out.println("Бот отвечает: " + randomWord);
+//                printWriter.println("[" + LocalDateTime.now().format(formatter) + "] Вы пишите: " + userInput);
+                if (OUT.equals(userInput)) {
+                    chatting = true;
+                    System.out.println("Закончили из первого цикла");
+                } else if (STOP.equals(userInput)) {
+                    System.out.println("Бот теперь молчит");
+                    boolean chattingNoBot = false;
+                    while (!chattingNoBot) {
+                        System.out.print("Вы ведёте монолог: ");
+                        String inputNoBot = scanner.nextLine();
+//                        printWriter.println();
+                        if (CONTINUE.equals(inputNoBot)) {
+                            System.out.println("Теперь бот отвечает");
+                            chattingNoBot = true;
+                        } else if (OUT.equals(inputNoBot)) {
+                            System.out.println("Закончили внутри второго цикла");
+                            break flag;
+                        }
+                    }
+                }
+            }
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+    }
+
+
+    private List<String> readPhrases() {
+        List<String> phrases = new ArrayList<>();
+        try (BufferedReader input = (new BufferedReader(
+                new FileReader("data/botanswers.txt", StandardCharsets.UTF_8)))) {
+            input.lines().forEach(System.out::println);
+            phrases.add(input.readLine());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        return phrases;
+    }
+
+    private void saveLog(List<String> log) {
+        String filePath = "data/dialog.txt";
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        Scanner scanner = new Scanner(System.in);
+        try {
+            FileWriter fileWriter = new FileWriter(filePath, StandardCharsets.UTF_8, true);
+            PrintWriter printWriter = new PrintWriter(fileWriter);
+            printWriter.println("[" + LocalDateTime.now().format(formatter) + "] Вы пишите: " + log.add(filePath));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
