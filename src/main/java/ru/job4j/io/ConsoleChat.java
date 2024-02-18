@@ -71,7 +71,8 @@ public class ConsoleChat {
 
     private List<String> readPhrases() {
         List<String> phrases = new ArrayList<>();
-        try (BufferedReader input = (new BufferedReader(new FileReader("data/botanswers.txt", StandardCharsets.UTF_8)))) {
+        try (BufferedReader input = (new BufferedReader(
+                new FileReader("data/botanswers.txt", StandardCharsets.UTF_8)))) {
             while (input.ready()) {
                 phrases.add(input.readLine());
             }
@@ -82,7 +83,7 @@ public class ConsoleChat {
     }
 
     private void saveLog(List<String> log) {
-        try (PrintWriter printWriter = new PrintWriter(new BufferedOutputStream(new FileOutputStream(path)))) {
+        try (PrintWriter printWriter = new PrintWriter(path, StandardCharsets.UTF_8)) {
             log.forEach(printWriter::println);
         } catch (IOException e) {
             e.printStackTrace();
