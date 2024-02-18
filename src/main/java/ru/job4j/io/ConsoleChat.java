@@ -26,43 +26,36 @@ public class ConsoleChat {
 
     public void run() {
         Scanner scanner = new Scanner(System.in);
-        boolean chatting = false;
+        String chatting = CONTINUE;
         List<String> text = new ArrayList<>();
         Random random = new Random();
+        List<String> phrases = readPhrases();
 
-        flag:
-        while (!chatting) {
+        while (!chatting.equals(OUT)) {
             System.out.print("Вы пишите: ");
             String userInput = scanner.nextLine();
-            int randomIndex = random.nextInt(readPhrases().size());
-            String randomWord = readPhrases().get(randomIndex);
             text.add("Вы пишите: " + userInput);
-            if (!STOP.equals(userInput)) {
+            int randomIndex = random.nextInt(phrases.size());
+            String randomWord = phrases.get(randomIndex);
+            if (CONTINUE.equals(userInput)) {
+                chatting = CONTINUE;
+            }
+            if (STOP.equals(userInput)) {
+                chatting = STOP;
+                System.out.println("Бот теперь молчит");
+                text.add("Бот теперь молчит");
+                System.out.println("Вы ведёте монолог: ");
+                text.add("Вы ведёте монолог: " + userInput);
+            }
+            if (CONTINUE.equals(chatting)) {
+                chatting = CONTINUE;
                 System.out.println("Бот отвечает: " + randomWord);
                 text.add("Бот отвечает: " + randomWord);
             }
             if (OUT.equals(userInput)) {
-                chatting = true;
-                System.out.println("Закончили из первого цикла");
-                text.add("Закончили из первого цикла");
-            } else if (STOP.equals(userInput)) {
-                System.out.println("Бот теперь молчит");
-                text.add("Бот теперь молчит");
-                boolean chattingNoBot = false;
-                while (!chattingNoBot) {
-                    System.out.print("Вы ведёте монолог: ");
-                    String inputNoBot = scanner.nextLine();
-                    text.add("Вы ведёте монолог: " + inputNoBot);
-                    if (CONTINUE.equals(inputNoBot)) {
-                        System.out.println("Теперь бот отвечает");
-                        text.add("Теперь бот отвечает");
-                        chattingNoBot = true;
-                    } else if (OUT.equals(inputNoBot)) {
-                        System.out.println("Закончили внутри второго цикла");
-                        text.add("Закончили внутри второго цикла");
-                        break flag;
-                    }
-                }
+                chatting = OUT;
+                System.out.println("Диалог окончен");
+                text.add("Диалог окончен");
             }
         }
         saveLog(text);
