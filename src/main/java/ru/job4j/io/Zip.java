@@ -59,8 +59,8 @@ public class Zip {
                 new File("./pom.xml"),
                 new File("./pom.zip")
         );
-        validateArgs(args);
         ArgsName argsName = ArgsName.of(args);
+        validateArgs(args);
         Path directory = Path.of(argsName.get("d"));
         Predicate<Path> condition = p -> !p.endsWith(argsName.get("e"));
         File target = new File(argsName.get("o"));
