@@ -34,11 +34,7 @@ public class Zip {
         }
     }
 
-    private static void validateArgs(String[] args) {
-        if (args.length != 3) {
-            throw new IllegalArgumentException("Arguments not passed to program");
-        }
-        ArgsName argsName = ArgsName.of(args);
+    private static void validateArgs(ArgsName argsName) {
         Path directory = Path.of(argsName.get("d"));
         String exclude = argsName.get("e");
         String output = argsName.get("o");
@@ -60,7 +56,7 @@ public class Zip {
                 new File("./pom.zip")
         );
         ArgsName argsName = ArgsName.of(args);
-        validateArgs(args);
+        validateArgs(argsName);
         Path directory = Path.of(argsName.get("d"));
         Predicate<Path> condition = p -> !p.endsWith(argsName.get("e"));
         File target = new File(argsName.get("o"));
