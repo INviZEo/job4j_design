@@ -50,6 +50,9 @@ public class Zip {
     }
 
     public static void main(String[] args) throws IOException {
+        if (args.length != 3) {
+            throw new IllegalArgumentException("Arguments not passed to program");
+        }
         Zip zip = new Zip();
         zip.packSingleFile(
                 new File("./pom.xml"),
