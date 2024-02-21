@@ -29,9 +29,9 @@ public class CSVReader {
                 if (out.equals("stdout")) {
                     Arrays.stream(arr2).forEach(System.out::println);
                 }
-//                else {
-//                file output stream
-//            }
+                /*else {
+                file output stream
+            }*/
             System.out.println(rsl);
         }
 }
