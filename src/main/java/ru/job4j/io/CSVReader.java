@@ -1,7 +1,6 @@
 package ru.job4j.io;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Path;
 import java.util.*;
 
@@ -12,6 +11,7 @@ public class CSVReader {
         String filter = argsName.get("filter");
         String out = argsName.get("out");
         List<String> rsl = new ArrayList<>();
+        List<String> names = new ArrayList<>();
 
         try (var scanner = new Scanner(path).useDelimiter(System.lineSeparator())) {
             while (scanner.hasNext()) {
@@ -19,23 +19,48 @@ public class CSVReader {
             }
             String[] array = filter.split(",");
             String[] arr2 = rsl.get(0).split(delimiter);
-            for (int s = 0; s < array.length; s++) {
-                for (int i = 0; i < arr2.length; i++) {
-                    if (array[s].equals(arr2[i])) {
-                        rsl.add(arr2[i]);
-                    }
+            List<Integer> index = getIndex(array, arr2);
+            for (String s : rsl) {
+                arr2 = s.split(delimiter);
+                for (Integer integer : index) {
+                    names.add(arr2[integer]);
                 }
             }
-                if (out.equals("stdout")) {
-                    Arrays.stream(arr2).forEach(System.out::println);
+            if (out.equals("stdout")) {
+                System.out.println(stringBuilder(index, names, delimiter));
+            } else {
+                try (PrintWriter output = new PrintWriter(new BufferedOutputStream(new FileOutputStream(out)))) {
+                    output.append(stringBuilder(index, names, delimiter));
                 }
-                /*else {
-                file output stream
-            }*/
-            System.out.println(rsl);
+            }
         }
-}
+    }
 
+    public static StringBuilder stringBuilder(List<Integer> index, List<String> names, String delimiter) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < names.size(); i++) {
+            sb.append(names.get(i));
+            if ((i + 1) % index.size() == 0) {
+                sb.append(System.lineSeparator());
+            } else {
+                sb.append(delimiter);
+            }
+        }
+        return sb;
+    }
+
+
+    public static List<Integer> getIndex(String[] array, String[] arr2) {
+        List<Integer> rsl = new ArrayList<>();
+        for (int s = 0; s < array.length; s++) {
+            for (int i = 0; i < arr2.length; i++) {
+                if (array[s].equals(arr2[i])) {
+                    rsl.add(i);
+                }
+            }
+        }
+        return rsl;
+    }
 
     private void validate(ArgsName argsName) {
         if (!argsName.get("path").contains(".csv")) {
@@ -52,7 +77,7 @@ public class CSVReader {
         if (argsName.get("filter").isBlank()) {
             throw new IllegalArgumentException();
         }
-        if (!"stdout".equals("out") && !argsName.get("out").equals("stdout")) {
+        if (!"stdout".equals(argsName.get("out")) && !argsName.get("out").endsWith(".csv")) {
             throw new IllegalArgumentException();
         }
     }
