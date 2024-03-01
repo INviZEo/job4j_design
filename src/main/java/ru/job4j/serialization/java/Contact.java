@@ -4,6 +4,7 @@ import java.io.*;
 import java.nio.file.Files;
 
 public class Contact implements Serializable {
+    @Serial
     private static final long serialVersionUID = 1L;
     private final int zipCode;
     private final String phone;
@@ -33,24 +34,9 @@ public class Contact implements Serializable {
     }
 
     public static void main(String[] args) throws IOException, ClassNotFoundException {
-        final Contact contact = new Contact(123456, "+7 (111) 111-11-11");
-
-        File tempFile = Files.createTempFile(null, null).toFile();
-        try (FileOutputStream fos = new FileOutputStream(tempFile);
-             ObjectOutputStream oos =
-                     new ObjectOutputStream(fos)) {
-            oos.writeObject(contact);
-        }
-
-        try (FileInputStream fis = new FileInputStream(tempFile);
-             ObjectInputStream ois =
-                     new ObjectInputStream(fis)) {
-            if (serialVersionUID == 1L) {
-                final Contact contactFromFile = (Contact) ois.readObject();
-                System.out.println(contactFromFile);
-            } else {
-                throw new InvalidClassException("UID do not match");
-            }
-        }
+        Serializator serializator = new Serializator();
+        serializator.serialize();
+        Deserializator deserializator = new Deserializator();
+        deserializator.deserialize();
     }
 }
