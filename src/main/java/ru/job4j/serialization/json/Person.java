@@ -17,6 +17,26 @@ public class Person {
         this.statuses = statuses;
     }
 
+    public boolean getSex() {
+        return sex;
+    }
+
+    public int getAge() {
+        return age;
+    }
+
+    public Contact getContact() {
+        return contact;
+    }
+
+    public String[] getStatuses() {
+        return statuses;
+    }
+
+    public String getName() {
+        return name;
+    }
+
     @Override
     public String toString() {
         return "Person{"

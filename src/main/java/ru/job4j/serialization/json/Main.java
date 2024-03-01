@@ -7,10 +7,8 @@ public class Main {
     public static void main(String[] args) {
         final Person person = new Person(false, 22, "Dave", new Contact("1488-228"),
                 new String[]{"Developer", "Java"});
-
         final Gson gson = new GsonBuilder().create();
         System.out.println(gson.toJson(person));
-
         final String personJson =
                 "{"
                         + "\"sex\":false,"
