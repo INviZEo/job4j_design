@@ -34,12 +34,6 @@ create trigger tax_trigger
 drop trigger tax_trigger on products
 
 
-create trigger tax_trigger
-    before insert
-    on products
-    for each row
-    execute procedure tax();
-
 
 create
 or replace function tax()
@@ -52,6 +46,13 @@ $$
     END;
 $$
 LANGUAGE 'plpgsql';
+
+
+create trigger tax_trigger
+    before insert
+    on products
+    for each row
+    execute procedure tax();
 
 
 
@@ -68,13 +69,6 @@ drop trigger tax_trigger on products
 
 
 
-create trigger price_history
-    before insert
-    on products
-    for each row
-    execute procedure history();
-
-
 create
 or replace function history()
     returns trigger as
@@ -85,3 +79,11 @@ $$
     END;
 $$
 LANGUAGE 'plpgsql';
+
+
+
+create trigger price_history
+    before insert
+    on products
+    for each row
+    execute procedure history();
