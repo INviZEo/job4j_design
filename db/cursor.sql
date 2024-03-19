@@ -55,3 +55,5 @@ fetch 0 from cursed;
 move backward 8 from cursed;
 move backward 5 from cursed;
 fetch prior from cursed;
+close cursed;
+commit;
