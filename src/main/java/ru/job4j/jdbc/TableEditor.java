@@ -5,6 +5,7 @@ import ru.job4j.io.Config;
 import java.io.IOException;
 import java.io.InputStream;
 import java.sql.*;
+import java.util.Arrays;
 import java.util.Properties;
 import java.util.StringJoiner;
 
@@ -28,70 +29,54 @@ public class TableEditor implements AutoCloseable {
         initConnection();
     }
 
-    public void createTable(String tableName) {
+
+    private void createStatement(String string) {
         try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "CREATE TABLE IF NOT EXISTS %s(%s, %s);",
-                    tableName,
-                    "id SERIAL PRIMARY KEY",
-                    "name TEXT"
-            );
-            statement.execute(sql);
+            statement.execute(string);
         } catch (SQLException e) {
             e.printStackTrace();
         }
+    }
+
+    public void createTable(String tableName) {
+        createStatement(String.format(
+                "CREATE TABLE IF NOT EXISTS %s(%s, %s);",
+                tableName,
+                "id SERIAL PRIMARY KEY",
+                "name TEXT"
+        ));
     }
 
     public void dropTable(String tableName) throws Exception {
-        try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "DROP TABLE %s;", tableName
-            );
-            statement.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        createStatement(String.format(
+                "DROP TABLE %s;", tableName
+        ));
     }
 
     public void addColumn(String tableName, String columnName, String type) throws Exception {
-        try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "ALTER TABLE %s ADD %s %s",
-                    tableName,
-                    columnName,
-                    type
-            );
-            statement.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        createStatement(String.format(
+                "ALTER TABLE %s ADD %s %s",
+                tableName,
+                columnName,
+                type
+        ));
     }
 
     public void dropColumn(String tableName, String columnName) {
-        try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "ALTER TABLE %s DROP COLUMN %s;",
-                    tableName,
-                    columnName
-            );
-            statement.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        createStatement(String.format(
+                "ALTER TABLE %s DROP COLUMN %s;",
+                tableName,
+                columnName
+        ));
     }
 
     public void renameColumn(String tableName, String columnName, String newColumnName) {
-        try (Statement statement = connection.createStatement()) {
-            String sql = String.format(
-                    "ALTER TABLE %s RENAME COLUMN %s TO %s;",
-                    tableName,
-                    columnName,
-                    newColumnName
-            );
-            statement.execute(sql);
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
+        createStatement(String.format(
+                "ALTER TABLE %s RENAME COLUMN %s TO %s;",
+                tableName,
+                columnName,
+                newColumnName
+        ));
     }
 
 
